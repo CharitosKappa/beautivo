@@ -1,10 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import configuration from './config/configuration';
 import databaseConfig from './config/database.config';
+import authConfig from './config/auth.config';
+import notificationsConfig from './config/notifications.config';
 import { validateEnv } from './config/validation';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
@@ -21,9 +25,10 @@ import { UploadsModule } from './modules/uploads/uploads.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [configuration, databaseConfig],
+      load: [configuration, databaseConfig, authConfig, notificationsConfig],
       validate: validateEnv,
     }),
+    ThrottlerModule.forRoot([{ ttl: 60, limit: 100 }]),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
@@ -63,6 +68,12 @@ import { UploadsModule } from './modules/uploads/uploads.module';
     UploadsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}

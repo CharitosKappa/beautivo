@@ -1,4 +1,5 @@
 import dataSource from '../../config/typeorm.config';
+import * as bcrypt from 'bcrypt';
 import { Shop } from '../../modules/shops/entities/shop.entity';
 import { ShopWorkingHours } from '../../modules/shops/entities/shop-working-hours.entity';
 import { Role } from '../../modules/roles/entities/role.entity';
@@ -92,19 +93,24 @@ async function seed() {
   }
 
   const adminEmail = 'admin@beautivo.local';
+  const seedAdminPassword = 'ChangeMe123!';
   let admin = await userRepo.findOne({ where: { email: adminEmail } });
   if (!admin) {
+    const hashedPassword = await bcrypt.hash(seedAdminPassword, 10);
     admin = userRepo.create({
       shopId: shop.id,
       roleId: role.id,
       email: adminEmail,
-      password: 'changeme',
+      password: hashedPassword,
       firstName: 'Beautivo',
       lastName: 'Admin',
       is2FAEnabled: false,
       isActive: true,
     });
     admin = await userRepo.save(admin);
+  } else if (!admin.password.startsWith('$2')) {
+    admin.password = await bcrypt.hash(seedAdminPassword, 10);
+    await userRepo.save(admin);
   }
 
   let category = await categoryRepo.findOne({

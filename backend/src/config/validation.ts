@@ -40,6 +40,48 @@ class EnvironmentVariables {
   @IsOptional()
   @IsString()
   DB_LOGGING?: string;
+
+  @IsOptional()
+  @IsString()
+  JWT_ACCESS_SECRET?: string;
+
+  @IsOptional()
+  @IsString()
+  JWT_REFRESH_SECRET?: string;
+
+  @IsOptional()
+  @IsString()
+  JWT_TEMP_SECRET?: string;
+
+  @IsOptional()
+  @IsString()
+  JWT_ACCESS_EXPIRES_IN?: string;
+
+  @IsOptional()
+  @IsString()
+  JWT_REFRESH_EXPIRES_IN?: string;
+
+  @IsOptional()
+  @IsString()
+  JWT_TEMP_EXPIRES_IN?: string;
+
+  @IsOptional()
+  @IsInt()
+  @Min(4)
+  @Max(20)
+  BCRYPT_ROUNDS?: number;
+
+  @IsOptional()
+  @IsString()
+  RESEND_API_KEY?: string;
+
+  @IsOptional()
+  @IsString()
+  RESEND_FROM_EMAIL?: string;
+
+  @IsOptional()
+  @IsString()
+  RESEND_ENABLED?: string;
 }
 
 export function validateEnv(config: Record<string, unknown>) {
