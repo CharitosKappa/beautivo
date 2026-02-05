@@ -1,0 +1,17 @@
+{
+  "name": "beautivo",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "concurrently -k -n FRONTEND,BACKEND -c blue,green \"npm --prefix frontend run dev\" \"npm --prefix backend run start:dev\"",
+    "frontend": "npm --prefix frontend run dev",
+    "backend": "npm --prefix backend run start:dev",
+    "lint": "npm --prefix frontend run lint && npm --prefix backend run lint"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

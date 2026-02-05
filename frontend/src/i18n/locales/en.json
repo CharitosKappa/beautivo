@@ -1,0 +1,19 @@
+{
+  "common": {
+    "appName": "Beautivo",
+    "nav": {
+      "home": "Home",
+      "services": "Services",
+      "booking": "Booking",
+      "account": "Account",
+      "admin": "Admin"
+    }
+  },
+  "public": {
+    "homeTitle": "Book beauty appointments in minutes",
+    "homeSubtitle": "Beautiful scheduling for salons and their clients."
+  },
+  "admin": {
+    "dashboardTitle": "Admin Dashboard"
+  }
+}
