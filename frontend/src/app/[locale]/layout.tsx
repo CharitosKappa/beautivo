@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages } from "next-intl/server";
+import { getMessages, setRequestLocale } from "next-intl/server";
 import { locales } from "@/i18n/config";
-import "../globals.css";
 
 export const metadata: Metadata = {
   title: "Beautivo",
@@ -19,17 +19,20 @@ export default async function LocaleLayout({
   params,
 }: {
   children: ReactNode;
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }) {
+  const { locale } = await params;
+
+  if (!locales.includes(locale as (typeof locales)[number])) {
+    notFound();
+  }
+
+  setRequestLocale(locale);
   const messages = await getMessages();
 
   return (
-    <html lang={params.locale}>
-      <body className="min-h-screen bg-background text-foreground">
-        <NextIntlClientProvider messages={messages}>
-          {children}
-        </NextIntlClientProvider>
-      </body>
-    </html>
+    <NextIntlClientProvider messages={messages}>
+      {children}
+    </NextIntlClientProvider>
   );
 }
